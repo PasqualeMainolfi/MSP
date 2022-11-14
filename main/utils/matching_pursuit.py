@@ -82,10 +82,8 @@ class MatchingPursuit():
 
         """
         generate time-frequency dictinary
-
-        return: dict()
         """
-
+        
         frame_lengths = self.target_decomposition.frame_lengths
 
         dictionary = dict()

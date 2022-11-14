@@ -5,6 +5,7 @@ from utils.matching_pursuit import MatchingPursuit
 import numpy as np
 import librosa as lbr
 import matplotlib.pyplot as plt
+
 plt.style.use("ggplot")
 
 def L2(x: list):
@@ -26,7 +27,7 @@ class MP():
         """
         generate atoms and time-frequency dictionary
 
-        mode: str, static or dynamic (see decomposition object)
+        mode: str, fixed or variable (see decomposition object)
 
         kwargs:
             wlen: win length
@@ -34,7 +35,7 @@ class MP():
             wlenmin: min win length
             wlenmax: max win length
             hopsizemin, hopsizemax: int, int min and max hopsize lenghts in percent ([hopsize > 0 , to ...], hop * wlen)
-            nwin: number of lengths generated randomly (mode: dynamic)
+            nwin: number of lengths generated randomly (mode: variable)
         """
 
         param = {
@@ -84,7 +85,8 @@ class MP():
         
         matching_atoms = self.matching_pursuit.matching_atoms
         
-        length = len(self.target) + len(matching_atoms[-1])
+        # length = len(self.target) + len(matching_atoms[-1])
+        length = self.matching_pursuit.target_decomposition.pickup_points[-1] + len(matching_atoms[-1])
 
         y = np.zeros(length, dtype=float)
 
@@ -148,21 +150,3 @@ class MP():
 
         plt.subplots_adjust(hspace=0.7, wspace=0.3)
         plt.show()
-
-
-
-
-        
-
-    
-            
-            
-
-
-    
-
-
-
-
-
-

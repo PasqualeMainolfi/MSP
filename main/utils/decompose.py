@@ -24,22 +24,22 @@ class Decompose():
         """
         decompose signal to a short-time representation
 
-        mode: str, decomposition mode [static, dynamic] 
-                static: with fixed window and overlap factor
-                dynamic = with variable window and overlap factor
+        mode: str, decomposition mode [fixed, variable] 
+                fixed: with fixed window and overlap factor
+                variable = with variable window and overlap factor
         
         kwargs:
-            wlen: int, window lengths in samples (static mode)
+            wlen: int, window lengths in samples (fixed mode)
             hopsize: int, hop length in percent (wlen * hop)
-            wlenmin, wlenmax: int, min and max window length (dynamic mode)
+            wlenmin, wlenmax: int, min and max window length (variable mode)
             hopsizemin, hopsizemax: int, int min and max hopsize lenghts in percent ([hopsize > 0 , to ...], hop * wlen)
-            nwin: int, number of window length (dynamic mode)
+            nwin: int, number of window length (variable mode)
         """
         
         try:
-            assert mode in ["static", "dynamic"]
+            assert mode in ["fixed", "variable"]
         except:
-            print("[ERROR IN DECOMPOSE OBJECT] decomposition mode can be static or dynamic")
+            print("[ERROR IN DECOMPOSE OBJECT] decomposition mode can be fixed or variable")
             sys.exit(0)
         
         self.decomposition_mode = mode
@@ -56,7 +56,7 @@ class Decompose():
 
         win_lengths = np.random.randint(
             low=param["wlenmin"], 
-            high=param["wlenmax"], 
+            high=param["wlenmax"],
             size=param["nwin"]
             )
 
@@ -79,33 +79,45 @@ class Decompose():
         pickup_marks = []
         frame_lengths = set()
 
-        hop = 0
+        hop, endwin = 0, 0
         while True:
 
-            if mode == "static":
+            if mode == "fixed":
                 wlen = param["wlen"]
                 hopsize = round(wlen * param["hopsize"])
-            elif mode == "dynamic":
+            elif mode == "variable":
                 wlen = np.random.choice(win_lengths)
                 hopmin, hopmax = round(wlen * param["hopsizemin"]), round(wlen * param["hopsizemax"])
                 hopsize = np.random.randint(hopmin, hopmax + 1)
             
             w = np.hanning(wlen)
+
+            if hop > self.n - wlen:
+                if hop >= self.n:
+                    break
+                else:
+                    f = self.x[hop:]
+                    if mode == "variable":
+                        end_frame = f
+                        wlen = len(end_frame)
+                    elif mode == "fixed":
+                        end_frame = np.zeros(wlen)
+                        end_frame[:self.n-hop] = f
+                    
+                    w = np.hanning(wlen)
+                    frame_lengths.add(wlen)
+                    pickup_marks.append(hop)
+                    frames.append(end_frame * w)
+                    break
+
+
             pickup_marks.append(hop)
             frame_lengths.add(wlen)
-
-            if self.n - hop < wlen:
-                break
 
             frame = self.x[hop:hop+wlen]
             frames.append(frame * w)
 
             hop += hopsize
-        
-        end_frame = np.zeros(wlen)
-        end_index = self.n - hop
-        end_frame[:end_index] = self.x[hop:]
-        frames.append(end_frame * w)
 
         self.frame_lengths = frame_lengths
         self.pickup_points = pickup_marks
