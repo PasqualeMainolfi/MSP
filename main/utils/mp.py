@@ -85,7 +85,6 @@ class MP():
         
         matching_atoms = self.matching_pursuit.matching_atoms
         
-        # length = len(self.target) + len(matching_atoms[-1])
         length = self.matching_pursuit.target_decomposition.pickup_points[-1] + len(matching_atoms[-1])
 
         y = np.zeros(length, dtype=float)

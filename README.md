@@ -29,10 +29,10 @@ target_atoms = mp.matching_pursuit.target_atoms
 # dictionary
 dictionary = mp.matching_pursuit.dictionary
 
-# coeffs with best index from matching pursuit process
+# coeffs with best index 
 coeffs = mp.matching_pursuit.coeffs
 
-# atoms with best index from matching pursuit process
+# atoms with best index 
 atoms = mp.matching_pursuit.atoms
 
 # matrix result of the product between coeffs and atoms with best index during the process

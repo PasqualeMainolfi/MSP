@@ -39,7 +39,7 @@ class MatchingPursuit():
         """
         generates target atoms
 
-        mode: str, static or dynamic (see decomposition object)
+        mode: str, fixed or variable (see decomposition object)
 
         kwargs:
             wlen: win length
@@ -47,7 +47,7 @@ class MatchingPursuit():
             wlenmin: min win length
             wlenmax: max win length
             hopsizemin, hopsizemax: int, int min and max hopsize lenghts in percent ([hopsize > 0 , to ...], hop * wlen)
-            nwin: number of lengths generated randomly (mode: dynamic)
+            nwin: number of lengths generated randomly (mode: variable)
 
         return: list[list[float]]
         """
@@ -74,7 +74,7 @@ class MatchingPursuit():
             fft = np.fft.rfft(f).real
             target_atoms.append(fft)
         
-        tp = float if mode == "static" else object
+        tp = float if mode == "fixed" else object
         target_atoms = np.array(target_atoms, dtype=tp)
         self.target_atoms = target_atoms
     
@@ -89,7 +89,7 @@ class MatchingPursuit():
         dictionary = dict()
         for i in tqdm(range(len(frame_lengths))):
             length = list(frame_lengths)[i]
-            self.source_decomposition.decompose(mode="static", wlen=length, hopsize=0.5)
+            self.source_decomposition.decompose(mode="fixed", wlen=length, hopsize=0.5)
             g = np.hamming(length)
             temp_frames = []
             for frame in self.source_decomposition.frames:
@@ -162,7 +162,7 @@ class MatchingPursuit():
         
         print("\nDONE!\n")
 
-        tp = float if self.target_decomposition.decomposition_mode == "static" else object
+        tp = float if self.target_decomposition.decomposition_mode == "fixed" else object
         m = np.array(m, dtype=tp)
         self.matching_atoms = m
         
