@@ -8,7 +8,7 @@ Python implementation of a Matching Pursuit algorithm discusses in *Matching Pur
 ```python
 from utils.matching_sound_processing import MSP
 ```
-2. Define *MP* object, specifying target path, source path and sample rate.
+2. Define *MSP* object, specifying target path, source path and sample rate.
 
 ```python
 mp = MSP(target_path=TARGET, source_path=SOURCE, sr=SR)
