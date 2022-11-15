@@ -11,7 +11,7 @@ from tqdm import tqdm
 def L2(x: list):
     return np.sqrt(np.sum(np.square(x)))
 
-def avoid_nan(x):
+def avoid_zero(x):
     y = np.copysign(x, 0)
     y = x + 1e-12 if not np.any(y) else x
     return y
@@ -93,7 +93,7 @@ class MatchingPursuit():
             g = np.hamming(length)
             temp_frames = []
             for frame in self.source_decomposition.frames:
-                frame = avoid_nan(x=frame)
+                frame = avoid_zero(x=frame)
                 fft = np.fft.rfft(frame * g).real
                 fft = fft/np.linalg.norm(fft) # norm = 1
                 temp_frames.append(fft)
@@ -110,7 +110,7 @@ class MatchingPursuit():
         eps: max error
         """
         
-        x = avoid_nan(x=x)
+        x = avoid_zero(x=x)
 
         r = x.copy() # residual
         d = dictionary.copy() # dictionary
