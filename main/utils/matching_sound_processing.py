@@ -8,10 +8,7 @@ import matplotlib.pyplot as plt
 
 plt.style.use("ggplot")
 
-def L2(x: list):
-    return np.sqrt(np.sum(np.square(x)))
-
-class MP():
+class MSP():
     
     def __init__(self, target_path: list, source_path: list, sr: int = 44100) -> None:
 

@@ -11,7 +11,7 @@ from tqdm import tqdm
 def L2(x: list):
     return np.sqrt(np.sum(np.square(x)))
 
-def avoid_zero(x):
+def avoid_zero(x: list):
     y = np.copysign(x, 0)
     y = x + 1e-12 if not np.any(y) else x
     return y
