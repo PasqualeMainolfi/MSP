@@ -16,7 +16,7 @@ if __name__ == "__main__":
     # create atoms and time-freq dictionary
     mp.generate_atoms(mode="variable", wlenmin=1024, wlenmax=4096, hopsizemin=0.25, hopsizemax=1, n_win=15)
 
-    # generaete matching signal
+    # generaete matching atoms
     mp.matching(k=10, eps=1e-6)
 
     # rebuild target
