@@ -32,7 +32,7 @@ class MatchingPursuit():
         self.atoms = None # atoms with best index from matching pursuit process
 
         self.matching_atoms = None # matrix result of the product between coeffs and atoms with best index during the process
-        
+
     
     def generate_target_atoms(self, mode: str, **kwargs) -> list[list[float]]:
 
@@ -71,7 +71,9 @@ class MatchingPursuit():
         target_atoms = []
         for i in tqdm(range(len(frames))):
             f = frames[i]
-            fft = np.fft.rfft(f).real
+            n = len(f)
+            g = np.hanning(n)
+            fft = np.fft.rfft(f * g).real
             target_atoms.append(fft)
         
         tp = float if mode == "fixed" else object
@@ -82,6 +84,7 @@ class MatchingPursuit():
 
         """
         generate time-frequency dictinary
+
         """
         
         frame_lengths = self.target_decomposition.frame_lengths
@@ -90,7 +93,7 @@ class MatchingPursuit():
         for i in tqdm(range(len(frame_lengths))):
             length = list(frame_lengths)[i]
             self.source_decomposition.decompose(mode="fixed", wlen=length, hopsize=0.5)
-            g = np.hamming(length)
+            g = np.hanning(length)
             temp_frames = []
             for frame in self.source_decomposition.frames:
                 frame = avoid_zero(x=frame)
@@ -156,8 +159,9 @@ class MatchingPursuit():
             frame = self.target_atoms[i]
             n = len(frame)
             self.find_coeffs_and_atoms(x=frame, dictionary=self.dictionary[n], k=k, eps=eps)
+            g = np.hanning(n * 2 - 2)
             atom = np.sum(self.coeffs * self.atoms.T, axis=1)
-            atom_ifft = np.fft.irfft(atom)
+            atom_ifft = np.fft.irfft(atom) * g
             m.append(atom_ifft)
         
         print("\nDONE!\n")

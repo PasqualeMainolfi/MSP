@@ -88,9 +88,8 @@ class MSP():
 
         for i, f in enumerate(matching_atoms):
             n = len(f)
-            win = np.hanning(n)
             hop = self.matching_pursuit.target_decomposition.pickup_points[i]
-            y[hop:hop+n] += f * win
+            y[hop:hop+n] += f
         
         return y
     
